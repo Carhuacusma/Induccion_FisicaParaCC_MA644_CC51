@@ -1,0 +1,5 @@
+﻿  Source.cpp
+g:\repospersonal\fisicainduccion\fisicainduccion\source.cpp(6): warning C4076: "unsigned": no se puede utilizar con el tipo "float"
+g:\repospersonal\fisicainduccion\fisicainduccion\source.cpp(10): warning C4076: "unsigned": no se puede utilizar con el tipo "float"
+  Source.obj : se encontró un módulo MSIL; vinculación incremental deshabilitada para MSIL; ejecutando vínculo completo
+  fisicaInduccion.vcxproj -> G:\reposPersonal\fisicaInduccion\Debug\fisicaInduccion.exe
