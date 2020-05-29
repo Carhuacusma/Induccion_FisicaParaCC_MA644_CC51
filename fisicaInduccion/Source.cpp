@@ -10,6 +10,11 @@ class detector {
 	vec3 dirB; //Direccion del campo magnético
 };
 
+class objeto {
+	vec3 posicion;
+
+};
+
 class controlador {
 	detector* detectorMetales;
 	int t;
