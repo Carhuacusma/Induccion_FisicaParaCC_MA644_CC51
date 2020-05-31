@@ -3,9 +3,23 @@
 
 typedef unsigned short ushort;
 
+#pragma region Clases
+
 class vec3 {
 public:
 	double x, y, z;
+	vec3(char o) {
+		o = tolower(o);
+		this->x = 0; this->y = 0; this->z = 0;
+		switch (o) {
+		case 'i':
+			this->x = 1; break;
+		case 'j':
+			this->y = 1; break;
+		case 'k':
+			this->z = 1; break;
+		}
+	}
 	vec3(double x, double y, double z) : x(x), y(y), z(z) { }
 	vec3(vec3* vector) {
 		if (vector == nullptr) {
@@ -18,6 +32,19 @@ public:
 			this->y = vector->y;
 			this->z = vector->z;
 		}
+	}
+	double magnitud() {
+		return sqrt(pow(x, 2) + pow(y, 2) + pow(z, 2));
+	}
+	void selfSuma(vec3* dir) {
+		this->x = this->x + dir->x;
+		this->y = this->y + dir->z;
+	}
+	void selfProdVecEsc(double c) {
+		//producto const * vector
+		this->x = this->x*c;
+		this->y = this->y*c;
+		this->z = this->z*c;
 	}
 };
 
@@ -102,9 +129,29 @@ public:
 	}
 };
 
+#pragma endregion
+
+#pragma region base para Vectores
+vec3 prodVecEsc(vec3* v1, double c) {
+	return vec3(v1->x*c, v1->y*c, v1->z*c);
+}
 vec3 suma(vec3* v1, vec3* v2) {
 	return vec3(v1->x + v2->x, v1->y + v2->y, v1->z + v2->z);
 }
 vec3 resta(vec3* v1, vec3* v2) {
+	//OKO REDUNDANCIA PORQUE BASTA suma(v1,v2*-1)
 	return vec3(v1->x - v2->x, v1->y - v2->y, v1->z - v2->z);
 }
+#pragma endregion
+
+#pragma region Apuntes Algebra Lineal para Angulos
+double dotSimp(vec3* v1, vec3* v2) {
+	//not a simp, pero pos no usa cos xd
+	//Algebra Lineal
+	return (v1->x*v2->x) + (v1->y*v2->y) + (v1->z*v2->z);
+}
+double cosTheta(vec3* v1, vec3* v2) {
+	//Algebra Lineal: (u.v)/(||u||.||v||)
+	return (dotSimp(v1, v2)) / (v1->magnitud()*v2->magnitud());
+}
+#pragma endregion
