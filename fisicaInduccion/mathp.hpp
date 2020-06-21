@@ -1,6 +1,6 @@
 #pragma once
 #include <math.h>
-
+#include <iostream>
 typedef unsigned short ushort;
 
 #pragma region Clases
@@ -83,6 +83,19 @@ public:
 			// F(x) = primer coeficiente * (x ^ primer exponente) + segundo coeficiente 
 		}
 		return res;
+	}
+	void mostrar(char x = 'x') {
+		for (ushort i = 0; i < this->nter; i++) {
+			if (this->c[i] != 0) {
+				switch (int(this->c[i])) {
+				case -1: std::cout << "-"; break;
+				case 1: break;
+				default:
+					std::cout << this->c[i]; break;
+				}
+				std::cout << x << "^" << this->exp[i] << " ";
+			}
+		}
 	}
 
 	//TO DO: LEER PORQUE FORMATO P(X) HARDCODEADO
