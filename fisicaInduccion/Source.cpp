@@ -53,7 +53,9 @@ class controlador {
 };
 
 int main() {
-
+	double c[3] = {1,1,2};
+	float e[3] = { 0,2,3 };
+	polinomio* Ejemplo = new polinomio(3, c[0], e[0]);
 	system("pause");
 	return 0;
 }
