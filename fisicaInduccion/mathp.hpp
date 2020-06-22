@@ -1,5 +1,6 @@
 #pragma once
 #include <math.h>
+#include <string>
 #include <iostream>
 typedef unsigned short ushort;
 
@@ -81,6 +82,28 @@ public:
 			double j = this->c[i];
 			res += j*pow(x, e);
 			// F(x) = primer coeficiente * (x ^ primer exponente) + segundo coeficiente 
+		}
+		return res;
+	}
+
+	std::string cadenaString(char x) {
+		std::string res;
+		bool sigpos = false;
+		for (ushort i = 0; i < this->nter; i++) {
+			if (this->c[i] != 0) {
+				switch (int(this->c[i])) {
+				case -1: res += "-"; break;
+				case 1: break;
+				default:
+					res += std::to_string(this->c[i]); break;
+				}
+				std::string exp = std::to_string(this->exp[i]);
+				//idk why, pero piensa que quiero usar String de namespace System
+				// --- poll: ¿Con WindowsForms como que da igual porque es muy Windows so.. normal usar su String xd
+				// --------- Repito, quieren usar Forms?
+				res += x + (std::string)"^" + exp + (std::string)" ";
+				// TODO: completar
+			}
 		}
 		return res;
 	}
