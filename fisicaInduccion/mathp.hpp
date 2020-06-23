@@ -50,6 +50,7 @@ public:
 };
 
 //EN FORMATO: P(x) = a + bx + c(x^2) + d(x^3) + e(x^5)
+//No acepta coeficiente[i] = 0
 class polinomio {
 	ushort nter;				// n terminos
 	double* c;				// coeficientes
@@ -68,7 +69,6 @@ public:
 			this->exp[i] = i;
 		}
 	}
-
 	~polinomio() {
 		delete[] c;
 		delete[] exp;
@@ -86,24 +86,23 @@ public:
 		return res;
 	}
 
-	std::string cadenaString(char x) {
+	std::string toString(char x = 'x') {
 		std::string res;
 		bool sigpos = false;
 		for (ushort i = 0; i < this->nter; i++) {
-			if (this->c[i] != 0) {
-				switch (int(this->c[i])) {
+			if(sigpos && this->c[i])
+			switch (int(this->c[i])) {
 				case -1: res += "-"; break;
 				case 1: break;
 				default:
 					res += std::to_string(this->c[i]); break;
-				}
-				std::string exp = std::to_string(this->exp[i]);
-				//idk why, pero piensa que quiero usar String de namespace System
-				// --- poll: ¿Con WindowsForms como que da igual porque es muy Windows so.. normal usar su String xd
-				// --------- Repito, quieren usar Forms?
-				res += x + (std::string)"^" + exp + (std::string)" ";
-				// TODO: completar
 			}
+			std::string exp = std::to_string(this->exp[i]);
+			//idk why, pero piensa que quiero usar String de namespace System
+			// --- poll: ¿Con WindowsForms como que da igual porque es muy Windows so.. normal usar su String xd
+			// --------- Repito, quieren usar Forms?
+			res += x + (std::string)"^" + exp + (std::string)" ";
+			// TODO: completar
 		}
 		return res;
 	}
