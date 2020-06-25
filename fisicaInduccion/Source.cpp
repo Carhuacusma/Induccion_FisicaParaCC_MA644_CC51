@@ -23,11 +23,16 @@ public:
 		posicion = new vec3(0, 0, 0);
 		dirB = new vec3(0, 0, -1);
 	}
+	detector(polinomio* nB): B(nB) {
+		this->posicion = new vec3(0, 0, 0);
+		this->dirB = new vec3('k', -1); // (0,0,-1)
+	}
 	~detector() {
 		delete B;
 		delete posicion;
 		delete dirB;
 	}
+	
 	void mover(ushort direccion) {
 		
 	}
@@ -37,6 +42,7 @@ class objeto {
 	vec3 posicion;
 
 };
+
 class controlador {
 	detector* detectorMetales;
 	int t;

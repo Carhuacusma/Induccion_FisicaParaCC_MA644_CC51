@@ -2,6 +2,11 @@
 #include <math.h>
 #include <string>
 #include <iostream>
+
+#define SEN 0
+#define COS 1
+
+
 typedef unsigned short ushort;
 
 #pragma region Clases
@@ -9,16 +14,17 @@ typedef unsigned short ushort;
 class vec3 {
 public:
 	double x, y, z;
-	vec3(char o) {
+	vec3(char o, float signo = 1) {
 		o = tolower(o);
 		this->x = 0; this->y = 0; this->z = 0;
 		switch (o) {
 		case 'i':
-			this->x = 1; break;
+			this->x = 1*signo; break;
 		case 'j':
-			this->y = 1; break;
+			this->y = 1*signo; break;
 		case 'k':
-			this->z = 1; break;
+			this->z = 1*signo; break;
+		default: break;
 		}
 	}
 	vec3(double x, double y, double z) : x(x), y(y), z(z) { }
@@ -27,8 +33,7 @@ public:
 			this->x = 0;
 			this->y = 0;
 			this->z = 0;
-		}
-		else {
+		}else {
 			this->x = vector->x;
 			this->y = vector->y;
 			this->z = vector->z;
@@ -49,12 +54,34 @@ public:
 	}
 };
 
-//EN FORMATO: P(x) = a + bx + c(x^2) + d(x^3) + e(x^5)
-//No acepta coeficiente[i] = 0
+//EN FORMATO: P(x) = a + bx + c(x^2) + d(x^3) + e(x^5).   No acepta coeficiente[i] = 0
 class polinomio {
 	ushort nter;				// n terminos
 	double* c;				// coeficientes
 	float* exp;	// exponentes
+	void limpiar() {
+		ushort j = 0;
+		for (ushort i = 0; i < this->nter; i++) { if (this->c[i] == 0) j++; }
+		this->limpiar(j);
+	}
+	void limpiar(ushort nlimpio) {
+		//Se conoce el tamaño de los nuevos arreglos
+		double* coefLimpio = new double[nlimpio];
+		float* expLimpio = new float[nlimpio];
+		ushort j = 0;
+		for (ushort i = 0; i < this->nter; i++) {
+			if (this->c[i] != 0) {
+				coefLimpio[j] = this->c[i];
+				expLimpio[j] = this->exp[i];
+				j++;
+			}
+		}
+		delete[] this->c;
+		delete[] this->exp;
+		this->c = coefLimpio;
+		this->exp = expLimpio;
+	}
+
 public:
 	polinomio(ushort nterminos, double* coeficientes, float* exponentes) : nter(nterminos) {
 		this->c = coeficientes;
@@ -74,14 +101,16 @@ public:
 		delete[] exp;
 	}
 
+	float getExp(ushort i) { return this->exp[i]; }
+	double getCoef(ushort i) { return this->c[i]; }
 	ushort getN() {	return this->nter;}
 	double resultado(double x) {
 		double res = 0;
-		for (ushort i = 0; i < nter; i++) {
+		for (ushort i = 0; i < this->nter; i++) {
 			ushort e = this->exp[i];
 			double j = this->c[i];
 			res += j*std::pow(x, e);
-			// F(x) = primer coeficiente * (x ^ primer exponente) + segundo coeficiente 
+			// F(x) = primer coeficiente * (x ^ primer exponente) + segundo coeficiente * (x^segundo exponente) + ... i
 		}
 		return res;
 	}
@@ -113,52 +142,16 @@ public:
 	}
 	void mostrar(char x = 'x') { std::cout << this->toString(x); }
 
-	//TO DO: LEER PORQUE FORMATO P(X) HARDCODEADO
-	//En teoría lo mejor es aplicar esto pero incluye tener funciones más grandes que solo polinomios XD, so f
-	//Send help si posible (O limitar nuestro B a que sea solamente polinomio (o sen y cos porque creo sí hay librerías))
-	//https://stackoverflow.com/questions/1559695/implementing-the-derivative-in-c-c
-	polinomio* derivada() {
-		//HARDCODEADO AL FORMATO P(X) = a*x^0 + b*x^1 (puede saltarse, por eso vector de exponentes)
-		double* newCoef = new double[nter]; // Nuevos Coeficientes
-		float* newExp = new float[nter];	// Nuevos Exponentes
+	void selfDerivada() {
 		ushort j = 0;	// Contador para estos nuevos arreglos
 		for (ushort i = 0; i < nter; i++) {
-			//Pasa por cada miembro del polinomio
-			//Regla: derivada de c*(x^n) = (c*n)*x^(n-1)
-			//Ejem: 5x^3 -> 5*3*x^2
 			//...Nuevo coeficiente: c*n
-			double newCoefAux = this->exp[i]*this->c[i];
+			this->c[i] = this->exp[i]*this->c[i];
 			//...Nuevo exponente: n-1
-			float newExpAux = this->exp[i] - 1;
-			if (newCoefAux != 0) {
-				//Siempre que el nuevo coeficiente sea diferente a 0
-				//Evita guardar 0 * x, ya que no es importante
-				newCoef[j] = newCoefAux;
-				newExp[j] = newExpAux;
-				j++;
-				//Guarda en la posición j, que siempre es menor a nter original,
-				//pero puede sobrar ( por los casos donde coeficiente = 0 )
-			}
+			this->exp[i] = this->exp[i] - 1;
+			if (this->c[i] != 0) j++;
 		}
-		if (j == this->nter)
-			//Si cuando derivas, la cantidad de miembros es la misma, BIEN
-			return new polinomio(j, newCoef, newExp);
-
-		//Para evitar tener un último(s) término(s) que apunta a la basura
-		//(Considerando eliminarlo por si se puede usar el espacio original en algo más y evitar cuatro arreglos)
-		//(Ya que igual j pasa como nter que determina hasta donde llegar)
-		//... Lo que sigue es un simple copiar a los nuevos arreglos donde no sobra espacio en la ram
-		double* newC = new double[j];
-		float* newE = new float[j];
-		for (short i = 0; i < j; i++) {
-			newC[i] = newCoef[i];
-			newE[i] = newExp[i];
-		}
-		//Borra los arreglos donde sobra espacio
-		delete[] newCoef;
-		delete[] newExp;
-		//Retorna el polinomio con espacio justo
-		return new polinomio(j, newC, newE);
+		if (j < this->nter) this->limpiar(j); // Si debe tener menos miembros, limpia.
 	}
 
 	polinomio* multiplicacion(double coef) {
@@ -172,6 +165,64 @@ public:
 		return new polinomio(this->nter, newC, newE);
 	}
 };
+
+#pragma endregion
+
+#pragma region Funciones Polinomio
+
+//En teoría lo mejor es aplicar esto pero incluye tener funciones más grandes que solo polinomios:
+//https://stackoverflow.com/questions/1559695/implementing-the-derivative-in-c-c
+polinomio derivada(polinomio* P) {
+	//P(X) = a*x^0 + b*x^1 (puede saltarse, por eso vector de exponentes)
+	double* newCoef = new double[P->getN()]; // Nuevos Coeficientes
+	float* newExp = new float[P->getN()];	// Nuevos Exponentes
+	ushort j = 0;	// Contador para estos nuevos arreglos
+	for (ushort i = 0; i < P->getN(); i++) {
+		//Pasa por cada miembro del polinomio
+		//Regla: derivada de c*(x^n) = (c*n)*x^(n-1) || Ejem: 5x^3 -> 5*3*x^2
+		//...Nuevo coeficiente: c*n
+		double newCoefAux = P->getCoef(i) * P->getExp(i);
+		//...Nuevo exponente: n-1
+		float newExpAux = P->getExp(i) - 1;
+		if (newCoefAux != 0) {
+			//Siempre que el nuevo coeficiente sea diferente a 0
+			//Evita guardar 0 * x, ya que no es importante
+			newCoef[j] = newCoefAux;
+			newExp[j] = newExpAux;
+			j++;
+			//Guarda en la posición j, que siempre es menor a nter original,
+			//pero puede sobrar ( por los casos donde coeficiente = 0 )
+		}
+	}
+	if (j == P->getN())
+		//Si cuando derivas, la cantidad de miembros es la misma, BIEN
+		return polinomio(j, newCoef, newExp);
+
+	//Para evitar tener un último(s) término(s) que apunta a la basura
+	//(Considerando eliminarlo por si se puede usar el espacio original en algo más y evitar cuatro arreglos)
+	//(Ya que igual j pasa como nter que determina hasta donde llegar)
+	//... Lo que sigue es un simple copiar a los nuevos arreglos donde no sobra espacio en la ram
+	double* newC = new double[j];
+	float* newE = new float[j];
+	for (short i = 0; i < j; i++) {
+		newC[i] = newCoef[i];
+		newE[i] = newExp[i];
+	}
+	//Borra los arreglos donde sobra espacio
+	delete[] newCoef;
+	delete[] newExp;
+	//Retorna el polinomio con espacio justo
+	return polinomio(j, newC, newE);
+}
+//TODO CORREGIR PUNTERO Y &E
+polinomio derivada(ushort trig, polinomio* E) {
+	polinomio* newE = &derivada(E);
+	switch (trig){
+	case SEN:
+		return *newE;
+	default: break;
+	}
+}
 
 #pragma endregion
 
