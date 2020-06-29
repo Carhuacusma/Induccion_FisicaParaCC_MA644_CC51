@@ -226,7 +226,6 @@ polinomio multiplicacion(polinomio* P,double coef) {
 	}
 	return polinomio(P->getN(), newC, newE);
 }
-
 //En teoría lo mejor es aplicar esto pero incluye tener funciones más grandes que solo polinomios:
 //https://stackoverflow.com/questions/1559695/implementing-the-derivative-in-c-c
 polinomio derivada(polinomio* P) {
@@ -271,6 +270,7 @@ polinomio derivada(polinomio* P) {
 	//Retorna el polinomio con espacio justo
 	return polinomio(j, newC, newE);
 }
+
 //TODO CORREGIR PUNTERO Y &E
 exptrig derivada(ushort trig, polinomio* E) {
 	polinomio* newE = &derivada(E);
@@ -281,9 +281,7 @@ exptrig derivada(ushort trig, polinomio* E) {
 	}
 }
 
-#pragma endregion
-
-#pragma region base para Vectores
+#pragma region funciones básicas de vectores
 vec3 prodVecEsc(vec3* v1, double c) {
 	return vec3(v1->x*c, v1->y*c, v1->z*c);
 }
@@ -295,6 +293,9 @@ vec3 resta(vec3* v1, vec3* v2) {
 	return vec3(v1->x - v2->x, v1->y - v2->y, v1->z - v2->z);
 }
 #pragma endregion
+
+#pragma endregion
+
 
 #pragma region Apuntes Algebra Lineal para Angulos
 double dotSimp(vec3* v1, vec3* v2) {

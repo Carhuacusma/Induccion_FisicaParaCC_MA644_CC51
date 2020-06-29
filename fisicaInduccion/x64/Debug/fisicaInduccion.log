@@ -1,5 +1,6 @@
 ﻿  Source.cpp
-g:\repospersonal\fisicainduccion\induccion_fisicaparacc_ma644_cc51\fisicainduccion\mathp.hpp(133): warning C4244: 'inicializando': conversión de 'float' a 'ushort'; posible pérdida de datos
-g:\repospersonal\fisicainduccion\induccion_fisicaparacc_ma644_cc51\fisicainduccion\mathp.hpp(273): warning C4715: 'derivada': no todas las rutas de acceso de control devuelven un valor
+g:\repospersonal\fisicainduccion\induccion_fisicaparacc_ma644_cc51\fisicainduccion\mathp.hpp(138): warning C4244: 'inicializando': conversión de 'float' a 'ushort'; posible pérdida de datos
+g:\repospersonal\fisicainduccion\induccion_fisicaparacc_ma644_cc51\fisicainduccion\ejemplo1.hpp(96): warning C4244: 'argumento': conversión de 'double' a 'unsigned short'; posible pérdida de datos
+g:\repospersonal\fisicainduccion\induccion_fisicaparacc_ma644_cc51\fisicainduccion\mathp.hpp(282): warning C4715: 'derivada': no todas las rutas de acceso de control devuelven un valor
   Source.obj : se encontró un módulo MSIL; vinculación incremental deshabilitada para MSIL; ejecutando vínculo completo
   fisicaInduccion.vcxproj -> G:\reposPersonal\fisicaInduccion\Induccion_FisicaParaCC_MA644_CC51\x64\Debug\fisicaInduccion.exe
